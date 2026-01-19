@@ -1,0 +1,24 @@
+Get single Product endpoint
+---
+tags:
+  - Companies
+definitions:
+  Company:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  Companies:
+    type: array
+    items:
+      $ref: '#/definitions/Company'
+responses:
+  200:
+    description: A list of Companies
+    schema:
+      $ref: '#/definitions/Companies'
+    examples:
+      - [{"id": "1234", "name": "Keyboard Roccat", "comment": "Nice", "company_id": "4321"}, {"id": "5678", "name": "Mouse Logitech", "comment": "Noice", "company_id": "4321"}]
+      - []
