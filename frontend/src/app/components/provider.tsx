@@ -4,11 +4,8 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import {setContext} from "@apollo/client/link/context";
 
-const backendUri = process.env.NEXT_PUBLIC_BACKEND_HASURA_URL;
-const productUri = `${backendUri}`;
-
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_HASURA_URL,
+  uri: process.env.NEXT_PUBLIC_BACKEND_HASURA_URL,
   headers: {
     "x-hasura-admin-secret": process.env.NEXT_PUBLIC_HASURA_ADMIN_SECRET || "",
   },
