@@ -117,7 +117,7 @@ export default function ProductManager() {
 
       {/* List of Products */}
       <ul>
-        {products.map((product) => (
+        {products && products.map((product) => (
           <li key={product.id} className="mb-2 flex items-center">
             <div className="flex-1">
               <span className="font-bold">{product.name}</span> - {product.comment} (
