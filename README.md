@@ -30,3 +30,6 @@ Au lancement, le service `db_migration_tp_coord_front_back` s'occupera d'appliqu
 Après le lancement, accèdez au backend flask à l'URL suivante pour vous créer un compte http://localhost:5005/register. Vous pourrez ensuite aller sur http://localhost:5005/login pour vous connecter.
 L'API swagger est disponible à l'URL suivante :  
 http://localhost:5005/apidocs
+
+Nom : El Oudghiri
+Prénom : Elias
