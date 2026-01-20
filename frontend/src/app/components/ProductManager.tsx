@@ -1,7 +1,7 @@
-'use client'
-import { useState, useEffect } from 'react';
+"use client";
+import { useState, useEffect } from "react";
 const backendUri = process.env.NEXT_PUBLIC_BACKEND_URL;
-const productUri = `${backendUri}/api/product`
+const productUri = `${backendUri}/api/product`;
 
 interface Product {
   id: number;
@@ -15,35 +15,48 @@ interface Product {
 export default function ProductManager() {
   const [products, setProducts] = useState<Product[]>([]);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({
-    name: '',
-    comment: '',
+    name: "",
+    comment: "",
     quantity: 0,
-    company_id: ''
+    company_id: "",
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // Fetch products on initial load
   useEffect(() => {
-    fetch(productUri)
+    fetch(productUri, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
   }, []);
 
   // Add a new product
   const addProduct = async () => {
-    if (!newProduct.name || !newProduct.comment || newProduct.quantity === undefined || !newProduct.company_id) {
-      alert('Please fill in all fields.');
+    if (
+      !newProduct.name ||
+      !newProduct.comment ||
+      newProduct.quantity === undefined ||
+      !newProduct.company_id
+    ) {
+      alert("Please fill in all fields.");
       return;
     }
 
     const res = await fetch(productUri, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       body: JSON.stringify(newProduct),
     });
     const product = await res.json();
     setProducts((prev) => [...prev, product]);
-    setNewProduct({ name: '', comment: '', quantity: 0, company_id: '' });
+    setNewProduct({ name: "", comment: "", quantity: 0, company_id: "" });
   };
 
   // Update an existing product
@@ -51,20 +64,28 @@ export default function ProductManager() {
     if (!editingProduct) return;
 
     const res = await fetch(`${productUri}/${editingProduct.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       body: JSON.stringify(editingProduct),
     });
     await res.json();
     setProducts((prev) =>
-      prev.map((p) => (p.id === editingProduct.id ? editingProduct : p))
+      prev.map((p) => (p.id === editingProduct.id ? editingProduct : p)),
     );
     setEditingProduct(null);
   };
 
   // Delete a product
   const deleteProduct = async (id: number) => {
-    await fetch(`${productUri}/${id}`, { method: 'DELETE' });
+    await fetch(`${productUri}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
@@ -79,14 +100,18 @@ export default function ProductManager() {
           className="border p-2 mr-2"
           placeholder="Product name"
           value={newProduct.name}
-          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+          onChange={(e) =>
+            setNewProduct({ ...newProduct, name: e.target.value })
+          }
         />
         <input
           type="text"
           className="border p-2 mr-2"
           placeholder="Comment"
           value={newProduct.comment}
-          onChange={(e) => setNewProduct({ ...newProduct, comment: e.target.value })}
+          onChange={(e) =>
+            setNewProduct({ ...newProduct, comment: e.target.value })
+          }
         />
         <input
           type="number"
@@ -94,11 +119,14 @@ export default function ProductManager() {
           placeholder="Quantity"
           value={newProduct.quantity}
           onChange={(e) =>
-            setNewProduct({ ...newProduct, quantity: parseInt(e.target.value, 10) })
+            setNewProduct({
+              ...newProduct,
+              quantity: parseInt(e.target.value, 10),
+            })
           }
         />
 
-<input
+        <input
           type="text"
           className="border p-2 mr-2"
           placeholder="Company id"
@@ -117,26 +145,28 @@ export default function ProductManager() {
 
       {/* List of Products */}
       <ul>
-        {products && products.map((product) => (
-          <li key={product.id} className="mb-2 flex items-center">
-            <div className="flex-1">
-              <span className="font-bold">{product.name}</span> - {product.comment} (
-              {product.quantity}) from {product.company.name} ({product.company_id})
-            </div>
-            <button
-              onClick={() => setEditingProduct(product)}
-              className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => deleteProduct(product.id)}
-              className="bg-red-500 text-white px-2 py-1 rounded"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
+        {products &&
+          products.map((product) => (
+            <li key={product.id} className="mb-2 flex items-center">
+              <div className="flex-1">
+                <span className="font-bold">{product.name}</span> -{" "}
+                {product.comment} ({product.quantity}) from{" "}
+                {product.company.name} ({product.company_id})
+              </div>
+              <button
+                onClick={() => setEditingProduct(product)}
+                className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => deleteProduct(product.id)}
+                className="bg-red-500 text-white px-2 py-1 rounded"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
       </ul>
 
       {/* Edit Product */}
@@ -172,13 +202,16 @@ export default function ProductManager() {
               })
             }
           />
-<input
+          <input
             type="text"
             className="border p-2 mr-2"
             placeholder="Company id"
             value={editingProduct.company_id}
             onChange={(e) =>
-              setEditingProduct({ ...editingProduct, company_id: e.target.value })
+              setEditingProduct({
+                ...editingProduct,
+                company_id: e.target.value,
+              })
             }
           />
           <button
